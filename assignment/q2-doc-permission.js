@@ -40,7 +40,7 @@ class Permission{
 
     // constructor
     constructor(role, operation){
-        if(this.constructor.name === "Permission"){
+        if(this.constructor.name === "Permission"){ //if we create a new Permission(), this is not allowed.
             throw new Error("This class cannot be instantiated");
         }
         this.#role = role;
@@ -73,3 +73,29 @@ class Permission{
 }
 
 // Add code here
+class Document extends Permission { 
+    #content = null;
+
+    constructor(role, operation, content) {
+        super(role, operation);
+        this.#content = content;
+    }
+
+    process() {
+        let checkPerm = this.check();
+        if (checkPerm) {
+            console.log("Allowed");
+        } else {
+            console.log("Blocked");
+        }
+    } 
+}
+
+const editor = new Document(Permission.RolesConst.EDITOR, Permission.OperationsConst.UPDATE, "Hello content");
+    editor.process(); // "Allowed"
+
+const reader = new Document(Permission.RolesConst.READER, Permission.OperationsConst.UPDATE, "Hello content");
+    reader.process(); // "Blocked"
+
+const owner = new Document(Permission.RolesConst.OWNER, Permission.OperationsConst.DELETE, "Hello content");
+    owner.process(); // "Allowed"
